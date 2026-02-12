@@ -1,89 +1,90 @@
 # Time Capsule
 
-A simple Android app that lets you write messages to your future self. Set a time, lock it away, and receive your message when the time comes.
+A simple cross-platform app to send messages to your future self. Built with Flutter.
 
 ## Features
 
 - 📝 Write personal messages to your future self
 - 🔒 Lock messages until a specific date and time
 - 🔔 Receive notifications when capsules are ready
-- 🎨 Beautiful Material 3 design with Jetpack Compose
+- 🎨 Beautiful Material 3 design
+- 📱 Works on iOS, Android, and Web
 
 ## Tech Stack
 
-- **Kotlin** - Modern, expressive programming language
-- **Jetpack Compose** - Declarative UI framework
-- **Room Database** - Local data persistence
-- **WorkManager** - Reliable background scheduling
-- **Clean Architecture** - Separation of concerns
-- **MVVM** - Modern app architecture pattern
+- **Flutter** - Cross-platform UI framework
+- **Dart** - Programming language
+- **Hive** - Lightweight local database
+- **Provider** - State management
+- **WorkManager** - Background task scheduling
+- **GoRouter** - Declarative navigation
+- **Flutter Local Notifications** - Push notifications
 
 ## Project Structure
 
 ```
-app/src/main/java/com/timecapsule/app/
+lib/
 ├── data/
-│   ├── local/
-│   │   ├── dao/          # Data Access Objects
-│   │   ├── database/     # Room database
-│   │   └── entity/       # Database entities
-│   └── repository/       # Repository implementations
+│   └── local/              # Database (Hive)
 ├── domain/
-│   ├── model/           # Domain models
-│   ├── repository/      # Repository interfaces
-│   └── usecase/         # Business logic
+│   ├── model/              # Data models
+│   └── repository/          # Repository interfaces & implementations
 ├── presentation/
-│   ├── ui/
-│   │   ├── components/   # Reusable UI components
-│   │   ├── navigation/  # Navigation setup
-│   │   ├── screens/     # App screens
-│   │   └── theme/       # Material 3 theme
-│   └── viewmodel/       # ViewModels
-├── util/                # Utility classes
-└── worker/              # WorkManager workers
+│   ├── components/         # Reusable UI components
+│   ├── navigation/         # Router configuration
+│   ├── screens/            # App screens
+│   ├── theme/              # App theming
+│   └── viewmodel/          # ViewModels
+├── utils/                  # Utility classes
+└── workers/               # Background workers
 ```
 
-## Building the App
+## Getting Started
 
 ### Prerequisites
 
-- Android Studio Hedgehog or later
-- JDK 17 or later
-- Android SDK 34 or later
+- Flutter SDK 3.0+
+- Dart 3.0+
+- Android Studio / VS Code
 
-### Steps
+### Installation
 
 1. **Clone the repository**
    ```bash
-   git clone <repository-url>
+   git clone https://github.com/MRLMRML/TimeCapsule.git
    cd TimeCapsule
    ```
 
-2. **Open in Android Studio**
-   - Open Android Studio
-   - Select "Open an existing project"
-   - Navigate to the TimeCapsule folder
+2. **Install dependencies**
+   ```bash
+   flutter pub get
+   ```
 
-3. **Build the project**
-   - Go to `Build > Make Project`
-   - Or run `./gradlew build` from the terminal
+3. **Generate Hive adapters**
+   ```bash
+   flutter packages pub run build_runner build
+   ```
 
-4. **Run on device/emulator**
-   - Connect a device or start an emulator
-   - Click the "Run" button in Android Studio
-   - Or run `./gradlew installDebug`
+4. **Run on your device/emulator**
+   ```bash
+   flutter run
+   ```
 
-## GitHub Setup
+## Building for Release
 
-To push this project to GitHub:
-
+### Android
 ```bash
-# Create a new repository on GitHub (via web interface)
+flutter build apk --release
+```
 
-# Add remote and push
-git remote add origin https://github.com/YOUR_USERNAME/TimeCapsule.git
-git branch -M main
-git push -u origin main
+### iOS
+```bash
+flutter build ios --release
+```
+
+### Web
+```bash
+flutter build web
 ```
 
 ## Architecture
@@ -91,27 +92,37 @@ git push -u origin main
 This app follows Clean Architecture principles:
 
 ### Domain Layer
-- Contains business logic and models
-- Independent of other layers
-- Defines interfaces for data access
+- **Models**: Data classes (TimeCapsule)
+- **Repository**: Abstract interfaces for data access
 
 ### Data Layer
-- Implements repository interfaces
-- Manages local database with Room
-- Converts between entities and domain models
+- **Hive**: Local NoSQL database
+- **Repository Implementation**: Concrete data access
 
 ### Presentation Layer
-- Handles UI with Jetpack Compose
-- Manages state with ViewModels
-- Navigates between screens
+- **Provider**: State management
+- **Material 3**: Modern declarative UI
+- **GoRouter**: Type-safe navigation
 
 ## Permissions
 
-The app requires the following permissions:
+### iOS
+Add to `ios/Runner/Info.plist`:
+```xml
+<key>NSUserNotificationUsageDescription</key>
+<string>We need this to notify you when your capsule is ready.</string>
+```
 
-- **POST_NOTIFICATIONS** - To alert you when capsules are ready
-- **RECEIVE_BOOT_COMPLETED** - To reschedule notifications after device restart
-- **SCHEDULE_EXACT_ALARM** - For precise notification timing
+### Android
+Add to `android/app/src/main/AndroidManifest.xml`:
+```xml
+<uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+<uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+<uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" />
+<uses-permission android:name="android.permission.USE_EXACT_ALARM" />
+<uses-permission android:name="android.permission.VIBRATE" />
+<uses-permission android:name="android.permission.WAKE_LOCK" />
+```
 
 ## Contributing
 
